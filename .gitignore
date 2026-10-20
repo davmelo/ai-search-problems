@@ -1,0 +1,15 @@
+# ambientes virtuais
+.venv/
+.venv*/
+
+# biblioteca clonada à parte (cada um clona na sua máquina)
+search_lib_repo/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# gráficos e arquivos gerados
+*.png
