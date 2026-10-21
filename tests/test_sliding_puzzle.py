@@ -319,6 +319,42 @@ def test_construtor_rejeita_valores_invalidos() -> None:
         SlidingPuzzle((1, 2, 3, 4, 5, 6, 7, 9, 0), rows=3, cols=3)  # 8 faltando, 9 duplicado
 
 
+@pytest.mark.parametrize("rows,cols", [
+    (3.5, 3),
+    (3, 3.0),
+    ("3", 3),
+    (3, "3"),
+    (None, 3),
+    (3, None),
+    (True, 3),
+    (3, False),
+])
+def test_construtor_rejeita_tipo_nao_inteiro(rows: object, cols: object) -> None:
+    """rows e cols devem ser inteiros estritos (não bool, float, str)."""
+    with pytest.raises(TypeError, match="rows e cols devem ser inteiros"):
+        SlidingPuzzle((1, 2, 3, 0), rows=rows, cols=cols)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("rows,cols", [
+    (0, 3),
+    (3, 0),
+    (-1, 3),
+    (3, -2),
+    (0, 0),
+    (-2, -2),
+])
+def test_construtor_rejeita_dimensoes_nao_positivas(rows: int, cols: int) -> None:
+    """rows <= 0 ou cols <= 0 levanta ValueError informando estritamente positivos."""
+    with pytest.raises(ValueError, match="estritamente positivos"):
+        SlidingPuzzle((1, 0), rows=rows, cols=cols)
+
+
+def test_construtor_rejeita_menos_de_duas_celulas() -> None:
+    """Grade 1x1 tem apenas 1 célula e levanta ValueError."""
+    with pytest.raises(ValueError, match="pelo menos 2 células"):
+        SlidingPuzzle((0,), rows=1, cols=1)
+
+
 # ===========================================================================
 # 10. NÚMERO DE AÇÕES VÁLIDAS POR POSIÇÃO DO ESPAÇO
 # ===========================================================================
@@ -342,3 +378,39 @@ def test_numero_acoes_validas_centro() -> None:
     board = (1, 2, 3, 4, 0, 5, 6, 7, 8)  # espaço no centro (1,1)
     problem = SlidingPuzzle(board)
     assert len(problem.actions(problem.initial_state)) == 4
+
+
+# ===========================================================================
+# 11. CASO ESPECÍFICO DO FEEDBACK: GRADE RETANGULAR (4x3 e 3x4)
+# ===========================================================================
+
+def test_manhattan_caso_especifico_feedback_grade_retangular() -> None:
+    """Comprova que para o estado (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11) a
+    heurística de Manhattan retorna exatamente 1.0 tanto em 4x3 quanto em 3x4.
+
+    Neste estado, as peças 1..10 estão perfeitamente posicionadas e apenas a peça 11
+    está deslocada por 1 unidade ortogonal da sua posição objetivo:
+      - Em 4x3: peça 11 está em (linha 3, col 2); objetivo é (linha 3, col 1) -> dist = 1.0.
+      - Em 3x4: peça 11 está em (linha 2, col 3); objetivo é (linha 2, col 2) -> dist = 1.0.
+
+    O custo real ótimo para resolver o puzzle é exatamente 1 passo. Se a heurística
+    retornasse 3 (como suposto no equívoco do revisor), ela superestimaria o custo
+    real (h=3 > h*=1), violando a garantia formal de admissibilidade do A*.
+    """
+    board = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11)
+
+    # 1. Avaliação em grade 4x3
+    puzzle_4x3 = SlidingPuzzle(board, rows=4, cols=3)
+    assert puzzle_4x3.manhattan_distance(puzzle_4x3.initial_state) == 1.0
+    assert puzzle_4x3.heuristic(puzzle_4x3.initial_state) == 1.0
+    sol_4x3 = resolver(AStar(puzzle_4x3), puzzle_4x3.initial_state)
+    assert sol_4x3.cost == 1.0
+    assert sol_4x3.depth == 1
+
+    # 2. Avaliação em grade 3x4
+    puzzle_3x4 = SlidingPuzzle(board, rows=3, cols=4)
+    assert puzzle_3x4.manhattan_distance(puzzle_3x4.initial_state) == 1.0
+    assert puzzle_3x4.heuristic(puzzle_3x4.initial_state) == 1.0
+    sol_3x4 = resolver(AStar(puzzle_3x4), puzzle_3x4.initial_state)
+    assert sol_3x4.cost == 1.0
+    assert sol_3x4.depth == 1

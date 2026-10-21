@@ -96,6 +96,13 @@ class SlidingPuzzle(Problem):
         rows: int = 3,
         cols: int = 3,
     ) -> None:
+        if not isinstance(rows, int) or isinstance(rows, bool) or not isinstance(cols, int) or isinstance(cols, bool):
+            raise TypeError("rows e cols devem ser inteiros.")
+        if rows <= 0 or cols <= 0:
+            raise ValueError("rows e cols devem ser estritamente positivos.")
+        if rows * cols < 2:
+            raise ValueError("O quebra-cabeça deve ter pelo menos 2 células.")
+
         total = rows * cols
         if len(initial) != total:
             raise ValueError(
@@ -110,6 +117,9 @@ class SlidingPuzzle(Problem):
         self.goal: SlidingState = SlidingState(goal_board, rows, cols)
         self._rows = rows
         self._cols = cols
+        self._goal_coords: Tuple[Tuple[int, int], ...] = tuple(
+            divmod(v - 1, cols) if v > 0 else (0, 0) for v in range(total)
+        )
         self._all_actions: List[SlidingAction] = [
             SlidingAction(d) for d in ("UP", "DOWN", "LEFT", "RIGHT")
         ]
@@ -164,17 +174,13 @@ class SlidingPuzzle(Problem):
         if not isinstance(state, SlidingState):
             return 0.0
         cols = self._cols
-        # Monta lookup: valor -> indice-objetivo (so para pecas reais)
-        goal_pos: dict[int, int] = {
-            v: i for i, v in enumerate(self.goal.board) if v != 0
-        }
+        coords = self._goal_coords
         total = 0.0
         for i, v in enumerate(state.board):
             if v == 0:
                 continue
-            target = goal_pos[v]
+            r_tgt, c_tgt = coords[v]
             r_cur, c_cur = divmod(i, cols)
-            r_tgt, c_tgt = divmod(target, cols)
             total += abs(r_cur - r_tgt) + abs(c_cur - c_tgt)
         return total
 
