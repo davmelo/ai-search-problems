@@ -45,7 +45,7 @@ SLD_TO_BUCHAREST = {
 
 @dataclass(frozen=True)
 class RomaniaState(State):
-    """Um estado do problema da Romênia é uma tupla de cidades visitadas, do início até a cidade atual."""
+    """A cidade onde o agente está no mapa da Romênia."""
     city: str
     
 class MoveToCity(Action):
@@ -59,7 +59,7 @@ class MoveToCity(Action):
         cost = ROMANIA_GRAPH[state.city].get(self.dst)
         if cost is None:
             return None  # não há estrada direta
-        return RomaniaState(self.dst), cost
+        return RomaniaState(self.dst), float(cost)
     def __eq__(self, other: object) -> bool:
         return isinstance(other, MoveToCity) and self.dst == other.dst
 
@@ -75,12 +75,11 @@ class Romania(Problem):
     def __init__(self, start: str = "Arad", goal: str = "Bucharest"):
         if start not in ROMANIA_GRAPH or goal not in ROMANIA_GRAPH:
             raise ValueError("Cidades inválidas.")
-        self.start = start
-        self.goal = goal
         self.initial_state = RomaniaState(start)
+        self.goal = RomaniaState(goal)
 
     def is_goal(self, state: State) -> bool:
-        return isinstance(state, RomaniaState) and state.city == self.goal
+        return state == self.goal
 
     def actions(self, state: State) -> List[Action]:
         if not isinstance(state, RomaniaState):
@@ -88,8 +87,6 @@ class Romania(Problem):
         return [MoveToCity(d) for d in ROMANIA_GRAPH[state.city]]
 
     def heuristic(self, state: State) -> float:
-        if not isinstance(state, RomaniaState):
+        if not isinstance(state, RomaniaState) or self.goal.city != "Bucharest":
             return 0.0
-        if self.goal != "Bucharest":
-            return 0.0  # sem tabela para outros destinos: vira custo uniforme
         return float(SLD_TO_BUCHAREST[state.city])
