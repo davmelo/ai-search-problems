@@ -189,11 +189,11 @@ class SlidingPuzzle(Problem):
         steps: int = 10,
         seed: Optional[int] = None,
     ) -> "SlidingPuzzle":
-        """Cria uma instancia resolvivel em no maximo `steps` movimentos.
+        """Cria uma instancia com embaralhamento real de `steps` movimentos.
 
-        Parte do estado-objetivo e aplica `steps` movimentos aleatorios,
-        garantindo que o estado gerado seja alcancavel (e portanto resolvivel).
-        O parametro `seed` permite reprodutibilidade nos testes.
+        Parte do estado-objetivo e aplica `steps` movimentos sem desfazer
+        imediatamente o movimento anterior (evitando vai-e-volta), garantindo
+        um espalhamento muito mais profundo e realista pelo tabuleiro.
         """
         rng = random.Random(seed)
         total = rows * cols
@@ -202,9 +202,25 @@ class SlidingPuzzle(Problem):
         dummy = SlidingPuzzle(goal_board, rows, cols)
         actions = dummy._all_actions
 
+        oposto = {
+            "UP": "DOWN",
+            "DOWN": "UP",
+            "LEFT": "RIGHT",
+            "RIGHT": "LEFT",
+        }
+        ultima_acao: Optional[str] = None
+
         for _ in range(steps):
             valid = [a for a in actions if a.apply(current) is not None]
-            action = rng.choice(valid)
+            # Evita desfazer o movimento que acabou de ser feito
+            if ultima_acao is not None:
+                sem_volta = [a for a in valid if a.direction != oposto.get(ultima_acao)]
+                candidatas = sem_volta if sem_volta else valid
+            else:
+                candidatas = valid
+
+            action = rng.choice(candidatas)
+            ultima_acao = action.direction
             result = action.apply(current)
             assert result is not None
             current, _ = result
