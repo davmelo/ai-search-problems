@@ -130,7 +130,7 @@ class SlidingPuzzle(Problem):
 
     def actions(self, state: State) -> List[Action]:
         """Retorna todas as acoes validas para o estado dado."""
-        if not isinstance(state, SlidingState):
+        if not isinstance(state, SlidingState) or state.rows != self._rows or state.cols != self._cols:
             return []
         return [a for a in self._all_actions if a.apply(state) is not None]
 
@@ -153,9 +153,11 @@ class SlidingPuzzle(Problem):
 
         Admissivel: cada peca fora do lugar precisa de pelo menos 1 movimento.
         """
-        if not isinstance(state, SlidingState):
+        if not isinstance(state, SlidingState) or state.rows != self._rows or state.cols != self._cols:
             return 0.0
         goal_board = self.goal.board
+        if len(state.board) != len(goal_board):
+            return 0.0
         return float(
             sum(
                 1
@@ -171,14 +173,18 @@ class SlidingPuzzle(Problem):
         movimentos para chegar a posicao correta. Nunca superestima o custo real.
         Vale 0 no estado objetivo.
         """
-        if not isinstance(state, SlidingState):
+        if not isinstance(state, SlidingState) or state.rows != self._rows or state.cols != self._cols:
+            return 0.0
+        coords = self._goal_coords
+        if len(state.board) != len(coords):
             return 0.0
         cols = self._cols
-        coords = self._goal_coords
         total = 0.0
         for i, v in enumerate(state.board):
             if v == 0:
                 continue
+            if v >= len(coords):
+                return 0.0
             r_tgt, c_tgt = coords[v]
             r_cur, c_cur = divmod(i, cols)
             total += abs(r_cur - r_tgt) + abs(c_cur - c_tgt)

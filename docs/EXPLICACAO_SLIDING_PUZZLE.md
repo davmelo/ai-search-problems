@@ -28,7 +28,7 @@ A suíte de testes cobre garantias formais de admissibilidade, dominância, cons
   ```powershell
   pytest -v
   ```
-  *(Atualmente com 89 testes passando em ~0.3s)*
+  *(Atualmente com 98 testes passando em ~0.3s)*
 
 - **Executar exclusivamente a suíte do Sliding Puzzle:**
   ```powershell
@@ -157,11 +157,15 @@ Portanto:
 
 A suposição de que a distância seria 3 decorre de confusões conceituais recorrentes na transposição de tabuleiros 1D para grades 2D:
 
-1. **Confusão com a Largura da Grade (`cols = 3`):**
+1. **Mistura Cruzada de Dimensões (cols=4 no estado e cols=3 na meta):**
+   Esta é a explicação matemática exata para o surgimento do número 3: se alguém calcular a posição atual da peça 11 assumindo 4 colunas ($\text{divmod}(11, 4) = (2, 3)$) e a posição objetivo assumindo 3 colunas ($\text{divmod}(10, 3) = (3, 1)$), a distância calculada será:
+   $$d = |2 - 3| + |3 - 1| = 1 + 2 = \mathbf{3.0}$$
+   Misturar as dimensões do problema dessa forma produz exatamente o valor 3, mas é conceitualmente incorreto porque as dimensões da grade devem ser consistentes tanto no estado atual quanto no estado meta.
+2. **Confusão com a Largura da Grade (`cols = 3`):**
    Em uma grade com 3 colunas, mover verticalmente altera o índice linear em $\pm 3$ posições ($\pm \text{cols}$). O revisor pode ter assumido intuitivamente que a presença do fator 3 nas dimensões da grade introduziria uma distância 3, confundindo a diferença de índices lineares com a distância ortogonal 2D.
-2. **Confusão de Eixos (Inversão Linha/Coluna):**
+3. **Confusão de Eixos (Inversão Linha/Coluna):**
    Se alguém calcular erroneamente `divmod(i, rows)` em vez de `divmod(i, cols)`, ou inverter a orientação da matriz, gerará coordenadas arbitrárias incompatíveis com a geometria da grade.
-3. **Equívoco de Contagem do Espaço Vazio:**
+4. **Equívoco de Contagem do Espaço Vazio:**
    O espaço vazio está na célula $(3, 1)$ e sua meta seria $(3, 2)$ (distância 1). Mesmo que alguém cometesse o erro de incluir o espaço vazio na conta, o total seria $1 + 1 = 2$, e jamais 3.
 
 ---

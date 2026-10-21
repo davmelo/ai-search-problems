@@ -1,7 +1,7 @@
 """Testes para problems/sliding_puzzle.py
 
 Como executar os testes:
-    pytest                                        # Roda todos os testes do projeto (73 itens)
+    pytest                                        # Roda todos os testes do projeto (98 itens)
     pytest tests/test_sliding_puzzle.py -v        # Roda apenas os testes do Sliding Puzzle
 
 Cobre:
@@ -322,12 +322,16 @@ def test_construtor_rejeita_valores_invalidos() -> None:
 @pytest.mark.parametrize("rows,cols", [
     (3.5, 3),
     (3, 3.0),
+    (3.5, 3.5),
     ("3", 3),
     (3, "3"),
+    ("3", "3"),
     (None, 3),
     (3, None),
+    (None, None),
     (True, 3),
     (3, False),
+    (True, False),
 ])
 def test_construtor_rejeita_tipo_nao_inteiro(rows: object, cols: object) -> None:
     """rows e cols devem ser inteiros estritos (não bool, float, str)."""
@@ -414,3 +418,63 @@ def test_manhattan_caso_especifico_feedback_grade_retangular() -> None:
     sol_3x4 = resolver(AStar(puzzle_3x4), puzzle_3x4.initial_state)
     assert sol_3x4.cost == 1.0
     assert sol_3x4.depth == 1
+
+
+# ===========================================================================
+# 12. CASOS DE BORDA: GRADES UNIDIMENSIONAIS DEGENERADAS (1xN e Nx1)
+# ===========================================================================
+
+@pytest.mark.parametrize("rows,cols,initial,expected_actions,expected_step", [
+    (1, 2, (0, 1), ["LEFT"], 1),
+    (2, 1, (0, 1), ["UP"], 1),
+    (1, 3, (1, 0, 2), ["LEFT"], 1),
+    (3, 1, (1, 0, 2), ["UP"], 1),
+])
+def test_grades_degeneradas_unidimensionais(
+    rows: int,
+    cols: int,
+    initial: tuple[int, ...],
+    expected_actions: list[str],
+    expected_step: int,
+) -> None:
+    """Grades 1xN e Nx1 possuem movimentação restrita a um único eixo ortogonal.
+
+    Verifica que:
+      - Ações geradas não tentam mover no eixo inexistente.
+      - A heurística de Manhattan é exata e admissível.
+      - O A* encontra a solução ótima sem erros.
+    """
+    puzzle = SlidingPuzzle(initial, rows=rows, cols=cols)
+    acoes = [a.direction for a in puzzle.actions(puzzle.initial_state)]
+    for acao_esperada in expected_actions:
+        assert acao_esperada in acoes
+    # Em 1xN não deve haver UP nem DOWN
+    if rows == 1:
+        assert "UP" not in acoes and "DOWN" not in acoes
+    # Em Nx1 não deve haver LEFT nem RIGHT
+    if cols == 1:
+        assert "LEFT" not in acoes and "RIGHT" not in acoes
+
+    assert puzzle.heuristic(puzzle.initial_state) == float(expected_step)
+    sol = resolver(AStar(puzzle), puzzle.initial_state)
+    assert sol.cost == float(expected_step)
+    assert sol.depth == expected_step
+
+
+# ===========================================================================
+# 13. ROBUSTEZ: ESTADOS DE DIMENSÃO INCOMPATÍVEL
+# ===========================================================================
+
+def test_metodos_com_estados_de_dimensao_incompativel() -> None:
+    """Métodos que recebem State devem lidar graciosamente com SlidingState de
+    dimensões diferentes da instância do problema, retornando neutros (0.0 ou [])
+    em vez de causar exceções não tratadas (ex: IndexError).
+    """
+    puzzle_3x3 = SlidingPuzzle((1, 2, 3, 4, 5, 6, 7, 8, 0), rows=3, cols=3)
+    state_4x4 = SlidingState(tuple(range(1, 16)) + (0,), rows=4, cols=4)
+
+    assert puzzle_3x3.manhattan_distance(state_4x4) == 0.0
+    assert puzzle_3x3.misplaced_tiles(state_4x4) == 0.0
+    assert puzzle_3x3.actions(state_4x4) == []
+    assert puzzle_3x3.is_goal(state_4x4) is False
+
