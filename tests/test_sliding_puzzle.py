@@ -1,5 +1,9 @@
 """Testes para problems/sliding_puzzle.py
 
+Como executar os testes:
+    pytest                                        # Roda todos os testes do projeto (73 itens)
+    pytest tests/test_sliding_puzzle.py -v        # Roda apenas os testes do Sliding Puzzle
+
 Cobre:
   - Solução ótima: estado a k passos do objetivo resolvido em <= k movimentos
   - Ação inválida retorna None

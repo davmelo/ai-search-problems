@@ -29,3 +29,20 @@ No terminal (com o ambiente virtual ativo):
   ```powershell
   python examples/demo_puzzle.py --all
   ```
+
+---
+
+## Como executar os Testes Automatizados (`pytest`)
+
+Para validar a integridade de todas as heurísticas e garantias matemáticas:
+
+- **Executar todos os testes do projeto (Hanoi + Sliding Puzzle + Estratégias):**
+  ```powershell
+  pytest -v
+  ```
+
+- **Executar exclusivamente a suíte do Sliding Puzzle:**
+  ```powershell
+  pytest tests/test_sliding_puzzle.py -v
+  ```
+
