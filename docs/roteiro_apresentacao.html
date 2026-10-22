@@ -256,10 +256,16 @@
           <span>🎙️ O que você fala</span>
         </div>
         <p class="text-sm leading-relaxed text-slate-200">
-          "Para fechar o arquivo do problema, nas <strong>linhas 197 a 240</strong> criamos o <code>random_instance</code>. Ele parte do objetivo e faz uma caminhada aleatória reversa para garantir 100% que o estado gerado tem solução — já que no Sliding Puzzle metade das permutações aleatórias puras são impossíveis de resolver."
+          "Para fechar o arquivo do problema, nas <strong>linhas 197 a 240</strong> temos o método <code>random_instance</code>. Aqui há um detalhe teórico muito importante que vale destacar:"
         </p>
         <p class="text-sm leading-relaxed text-slate-200">
-          "E implementamos um cuidado essencial aqui: <strong>bloqueamos o movimento reverso imediato</strong>. Se o algoritmo subiu, ele é proibido de descer no passo seguinte. Isso impede aquele 'vai-e-volta' bobo e espalha o tabuleiro de verdade pelo espaço de estados."
+          "No Sliding Puzzle, nós <strong>não podemos simplesmente dar um shuffle aleatório</strong> no tabuleiro. Pela teoria combinatória das permutações, o espaço de estados é dividido em duas metades desconectadas com base na <strong>paridade do número de inversões</strong> e na posição do espaço vazio. Exatamente <strong>50% de todas as permutações aleatórias possíveis são matematicamente impossíveis de resolver</strong>! Se gerássemos com shuffle puro, em metade das vezes o A* iria expandir milhares de nós até estourar a memória sem nunca encontrar solução."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Por isso, a gente gera as instâncias por <strong>caminhada aleatória reversa a partir da meta</strong>: como partimos do objetivo aplicando movimentos válidos, temos garantia matemática de 100% de solubilidade."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "E para o embaralhamento não ficar trivial, nas <strong>linhas 217 a 231</strong> nós criamos o filtro <code>sem_volta</code>: se o espaço vazio acabou de ir para cima, é <strong>proibido desfazer o movimento</strong> e ir para baixo no passo seguinte. Isso elimina o efeito de vai-e-volta imediato, forçando o tabuleiro a se afastar de verdade pelo grafo de estados e gerando desafios reais para a busca."
         </p>
       </div>
     </section>
