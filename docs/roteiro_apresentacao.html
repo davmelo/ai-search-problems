@@ -298,17 +298,29 @@
       </div>
 
       <!-- Fala Sugerida -->
-      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-3">
         <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
           <span>🎙️ O que você fala</span>
         </div>
         <p class="text-sm leading-relaxed text-slate-200">
-          "Agora indo para a validação: aqui em <span class="text-blue-300 font-mono">tests/test_sliding_puzzle.py</span>, construímos uma bateria completíssima cobrindo soluções ótimas em no máximo K passos com A*, imutabilidade do estado, dominância de Manhattan sobre Misplaced, validações de borda e o teste específico do 4×3 comprovando que a heurística retorna exatamente 1.0."
+          "Agora vamos pra parte mais importante: ver se isso tudo funciona de verdade."
         </p>
         <p class="text-sm leading-relaxed text-slate-200">
-          "Vou rodar o <code>pytest -v</code> aqui no terminal para vermos a suíte inteira rodando..."
-          <br><em>(Aperte Enter no terminal e espere ~0.3s)</em><br>
-          "Como podem ver: <strong>98 testes passando, tudo verde em apenas 0.2 segundos!</strong> Sendo 74 testes dedicados só ao Sliding Puzzle, sem quebrar absolutamente nenhum dos testes de Hanoi e das buscas criadas pelos colegas."
+          "Aqui no arquivo <span class="text-blue-300 font-mono">tests/test_sliding_puzzle.py</span>, a gente montou uma bateria bem completa de testes. Cobrimos tudo que o professor e o grupo pediram:
+        </p>
+        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside pl-2">
+          <li>Testamos se o A* sempre encontra a solução ótima no menor número de passos;</li>
+          <li>Garantimos que ações inválidas nas bordas retornam <code>None</code>;</li>
+          <li>Validamos que a heurística de Manhattan é admissível e domina o <em>misplaced</em>;</li>
+          <li>Aqui nas <strong>linhas 307 a 360</strong>, testamos as travas do construtor rejeitando zero, negativos e tipos inválidos;</li>
+          <li>E ali na <strong>linha 388</strong>, deixamos o teste do 4×3 provando na prática que a heurística dá <strong>1.0</strong> e resolve o tabuleiro em 1 passo."</li>
+        </ul>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Mas melhor do que ficar só olhando código é ver tudo rodando. Vou abrir o terminal aqui embaixo e digitar <code>pytest -v</code>..."
+          <br><em class="text-slate-400 text-xs font-mono">(Aperte Enter no terminal e aponte para a tela)</em>
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Olha aí o resultado: <strong>98 testes passando, tudo verde em menos de meio segundo!</strong> Desses 98, 74 testes são dedicados só ao Sliding Puzzle, e o mais bacana: integrados perfeitamente com os testes de Hanoi e das buscas que os colegas já tinham feito, sem quebrar absolutamente nada."
         </p>
       </div>
     </section>
