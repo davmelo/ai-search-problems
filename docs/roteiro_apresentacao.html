@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roteiro de Gravação — Sliding Puzzle (Pessoa 2)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .cue-screen {
+      border-left: 4px solid #3b82f6;
+    }
+    .cue-speech {
+      border-left: 4px solid #10b981;
+    }
+    .highlight-file {
+      background-color: #1e293b;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .highlight-line {
+      background-color: #334155;
+      color: #facc15;
+      font-family: monospace;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 antialiased">
+
+  <!-- Sticky Top Bar: Cronômetro & Navegação -->
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 p-4 rounded-2xl shadow-xl mb-8 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">🎬</span>
+      <div>
+        <h1 class="text-lg font-bold text-white flex items-center gap-2">
+          Roteiro de Gravação — Sliding Puzzle
+          <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Pessoa 2</span>
+        </h1>
+        <p class="text-xs text-slate-400">Tempo estimado total: <strong>~7 a 8 minutos</strong> (Meta máx: 10 min)</p>
+      </div>
+    </div>
+
+    <!-- Timer / Cronômetro -->
+    <div class="flex items-center gap-3 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
+      <div class="flex flex-col items-center">
+        <span class="text-[10px] uppercase font-bold text-slate-500">Tempo de Gravação</span>
+        <span id="displayTimer" class="font-mono text-2xl font-bold text-emerald-400">00:00</span>
+      </div>
+      <div class="flex gap-1 ml-2">
+        <button id="btnStart" onclick="startTimer()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition">Iniciar</button>
+        <button id="btnPause" onclick="pauseTimer()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-lg transition">Pausar</button>
+        <button id="btnReset" onclick="resetTimer()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg transition">Zerar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container Principal -->
+  <main class="max-w-4xl mx-auto space-y-8 pb-16">
+
+    <!-- Card Dica Monitor 2 -->
+    <div class="bg-blue-950/40 border border-blue-800/60 rounded-xl p-4 text-xs text-blue-200 flex items-start gap-3">
+      <span class="text-lg">💡</span>
+      <div>
+        <p class="font-semibold text-blue-100 mb-1">Como usar este roteiro no segundo monitor:</p>
+        <p>No <strong>Monitor 1 (onde você grava a tela)</strong>, deixe o VS Code aberto com o código e o terminal. No <strong>Monitor 2</strong>, mantenha esta página aberta no Chrome. Cada bloco traz exatamente <strong>o que você clica/mostra na tela</strong> e a <strong>fala sugerida</strong> (natural e direta) para ler ou se guiar sem precisar decorar!</p>
+      </div>
+    </div>
+
+    <!-- BLOCO 1: INTRODUÇÃO -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">1</span>
+          <h2 class="text-base font-bold text-white">Introdução & Identificação no Projeto</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 00:00 - 01:00 (1 min)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>Deixe o <strong>VS Code</strong> aberto com a barra lateral de arquivos visível.</li>
+          <li>Mostre a pasta do projeto: <span class="highlight-file">ai-search-problems</span>.</li>
+          <li>Aponte o mouse para o arquivo <span class="highlight-file">problems/sliding_puzzle.py</span>.</li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Olá professor Pablo, olá pessoal! Meu nome é <strong>[Seu Nome]</strong>, e no nosso grupo do projeto da 1ª VA, eu fiquei responsável pelo papel da <strong>Pessoa 2</strong>."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "A minha responsabilidade foi implementar o problema do <strong>Sliding Puzzle</strong> — o famoso quebra-cabeça deslizante — dentro da pasta <span class="text-blue-300 font-mono">problems/sliding_puzzle.py</span>, suportando múltiplos tamanhos como <strong>3×3, 4×4 e 4×3</strong>, além de implementar as duas heurísticas exigidas: <strong>peças fora do lugar (misplaced tiles)</strong> e a <strong>distância de Manhattan</strong>, com seus respectivos testes automatizados."
+        </p>
+      </div>
+    </section>
+
+    <!-- BLOCO 2: ESTRUTURA DO ESTADO E DA AÇÃO -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">2</span>
+          <h2 class="text-base font-bold text-white">Modelagem do Estado e das Ações</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 01:00 - 02:30 (1.5 min)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>Abra <span class="highlight-file">problems/sliding_puzzle.py</span>.</li>
+          <li>Destaque a classe <span class="text-yellow-300 font-mono">SlidingState</span> nas <span class="highlight-line">Linhas 10 a 26</span>.</li>
+          <li>Depois role até a classe <span class="text-yellow-300 font-mono">SlidingAction</span> e seu método <span class="text-yellow-300 font-mono">apply</span> nas <span class="highlight-line">Linhas 37 a 75</span>.</li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Começando pela estrutura básica aqui nas <strong>linhas 10 a 26</strong>: nós temos a classe <code>SlidingState</code>, que herda da classe <code>State</code> da biblioteca básica. Reparem que ela é decorada com <code>@dataclass(frozen=True)</code> e guarda o tabuleiro como uma <strong>tupla imutável linear</strong>. O valor <strong>0</strong> representa o espaço vazio. Isso foi fundamental porque, para funcionar com algoritmos de busca em grafo como o <code>GraphSearch</code> e o <code>AStar</code>, o estado precisa ser estritamente <strong>hashável</strong>."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Em seguida, nas <strong>linhas 37 a 75</strong>, temos o <code>SlidingAction</code>. Definimos as quatro direções: <em>UP, DOWN, LEFT</em> e <em>RIGHT</em>. No método <code>apply</code>, a gente calcula a posição do espaço vazio com <code>divmod</code> e verifica se a movimentação é válida dentro dos limites da grade. Se for inválida, ele retorna <code>None</code>. Se for válida, nós geramos um novo tabuleiro com a troca e retornamos <code>(novo_estado, custo 1.0)</code>. Uma regra crítica da lib que respeitamos à risca é que o <code>apply</code> <strong>nunca altera o estado original</strong>."
+        </p>
+      </div>
+    </section>
+
+    <!-- BLOCO 3: O CONSTRUTOR E VALIDAÇÕES -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">3</span>
+          <h2 class="text-base font-bold text-white">Classe SlidingPuzzle e Blindagem do Construtor</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 02:30 - 03:45 (1.25 min)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>Role para a classe <span class="text-yellow-300 font-mono">SlidingPuzzle</span>.</li>
+          <li>Mostre o <span class="text-yellow-300 font-mono">__init__</span> nas <span class="highlight-line">Linhas 93 a 125</span>.</li>
+          <li>Destaque com o mouse as verificações de tipo e de valores positivos (<span class="highlight-line">Linhas 99 a 105</span>).</li>
+          <li>Destaque a linha <span class="highlight-line">120</span> onde está o <code>_goal_coords</code>.</li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Descendo para a classe <code>SlidingPuzzle</code> nas <strong>linhas 93 a 125</strong>: parametrizamos o problema com <code>rows</code> e <code>cols</code>, com valor padrão 3×3, mas aceitando qualquer dimensão."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Aqui no construtor, adicionamos validações estritas de robustez: garantimos que <code>rows</code> e <code>cols</code> sejam números inteiros, estritamente positivos e que a grade tenha pelo menos 2 células. Também validamos se o tabuleiro passado contém exatamente todas as peças de 0 até o total menos 1."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "E um detalhe crucial de engenharia na <strong>linha 120</strong>: nós pré-computamos na tupla <code>_goal_coords</code> as coordenadas de destino <code>(linha, coluna)</code> de cada peça logo no início. Como o estado objetivo é sequencial de 1 até N-1, a peça de valor <code>v</code> sempre tem como meta a posição <code>v - 1</code>. Deixar isso pré-calculado fez o algoritmo A* rodar quase <strong>duas vezes mais rápido</strong>, porque não aloca memória durante a busca."
+        </p>
+      </div>
+    </section>
+
+    <!-- BLOCO 4: AS HEURÍSTICAS E O DESAFIO 4x3 -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">4</span>
+          <h2 class="text-base font-bold text-white">Heurísticas: Misplaced, Manhattan e o Desafio 4×3</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 03:45 - 05:15 (1.5 min)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>Role para os métodos <span class="text-yellow-300 font-mono">misplaced_tiles</span> (<span class="highlight-line">Linhas 151 a 167</span>) e <span class="text-yellow-300 font-mono">manhattan_distance</span> (<span class="highlight-line">Linhas 169 a 191</span>).</li>
+          <li>Mostre a fórmula da distância com <code>abs(r_cur - r_tgt) + abs(c_cur - c_tgt)</code> na linha 190.</li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Agora falando das duas heurísticas: nas <strong>linhas 151 a 167</strong> está o <code>misplaced_tiles</code>, que simplesmente conta quantas peças reais estão fora da sua posição-objetivo."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "E nas <strong>linhas 169 a 191</strong>, temos a heurística padrão que é a <code>manhattan_distance</code>. Para cada peça, somamos o deslocamento em linhas mais o deslocamento em colunas. Ela é mais informada e domina o misplaced."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Aqui eu quero destacar um ponto muito legal: <strong>o desafio da grade retangular 4×3</strong> que o professor colocou no PDF. Foi uma sacada excelente do professor Pablo colocar essa interrogação <em>'4x3?'</em>, porque muita gente costuma deduzir a largura do tabuleiro usando raiz quadrada de N, e num tabuleiro retangular de 12 peças a raiz é quebrada, o que quebra códigos genéricos."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Além disso, provamos que a distância de Manhattan é perfeitamente <strong>admissível e consistente no 4×3</strong>, porque as projeções em X e Y continuam independentes em qualquer grade cartesiana. <em>Inclusive, professor Pablo, para não gastar o tempo deste vídeo com demonstração matemática pura, deixei um documento completo em <span class="text-blue-300 font-mono">docs/EXPLICACAO_SLIDING_PUZZLE.md</span> com a prova formal e todas as contas detalhadas</em>."
+        </p>
+      </div>
+    </section>
+
+    <!-- BLOCO 5: RANDOM WALK REVERSO -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">5</span>
+          <h2 class="text-base font-bold text-white">Gerador de Instâncias Realistas (random_instance)</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 05:15 - 06:00 (45 seg)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>Role para o final do arquivo: método estático <span class="text-yellow-300 font-mono">random_instance</span> (<span class="highlight-line">Linhas 197 a 240</span>).</li>
+          <li>Aponte para o dicionário <code>oposto</code> e a linha do <code>sem_volta</code> nas linhas 217 a 231.</li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Para fechar o arquivo do problema, nas <strong>linhas 197 a 240</strong> criamos o <code>random_instance</code>. Ele parte do objetivo e faz uma caminhada aleatória reversa para garantir 100% que o estado gerado tem solução — já que no Sliding Puzzle metade das permutações aleatórias puras são impossíveis de resolver."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "E implementamos um cuidado essencial aqui: <strong>bloqueamos o movimento reverso imediato</strong>. Se o algoritmo subiu, ele é proibido de descer no passo seguinte. Isso impede aquele 'vai-e-volta' bobo e espalha o tabuleiro de verdade pelo espaço de estados."
+        </p>
+      </div>
+    </section>
+
+    <!-- BLOCO 6: TESTES AUTOMATIZADOS (PYTEST) -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">6</span>
+          <h2 class="text-base font-bold text-white">Suíte de Testes Automatizados (pytest)</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 06:00 - 07:15 (1.25 min)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>Abra rapidamente o arquivo <span class="highlight-file">tests/test_sliding_puzzle.py</span>.</li>
+          <li>Mostre a seção de validação do construtor e a seção 11 do teste do 4x3.</li>
+          <li>Abra o <strong>Terminal Integrado do VS Code</strong> (<kbd class="bg-slate-800 px-1 py-0.5 rounded text-amber-300">Ctrl + `</kbd>) e digite:
+            <div class="mt-2 bg-slate-900 p-2 rounded text-emerald-300 font-mono text-xs">
+              pytest -v
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Agora indo para a validação: aqui em <span class="text-blue-300 font-mono">tests/test_sliding_puzzle.py</span>, construímos uma bateria completíssima cobrindo soluções ótimas em no máximo K passos com A*, imutabilidade do estado, dominância de Manhattan sobre Misplaced, validações de borda e o teste específico do 4×3 comprovando que a heurística retorna exatamente 1.0."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Vou rodar o <code>pytest -v</code> aqui no terminal para vermos a suíte inteira rodando..."
+          <br><em>(Aperte Enter no terminal e espere ~0.3s)</em><br>
+          "Como podem ver: <strong>98 testes passando, tudo verde em apenas 0.2 segundos!</strong> Sendo 74 testes dedicados só ao Sliding Puzzle, sem quebrar absolutamente nenhum dos testes de Hanoi e das buscas criadas pelos colegas."
+        </p>
+      </div>
+    </section>
+
+    <!-- BLOCO 7: DEMONSTRAÇÃO VISUAL & ENCERRAMENTO -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">7</span>
+          <h2 class="text-base font-bold text-white">Demonstração Visual no Terminal & Encerramento</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-1 rounded">⏱️ 07:15 - 08:00 (45 seg)</span>
+      </div>
+
+      <!-- O que fazer na tela -->
+      <div class="cue-screen bg-slate-950 p-4 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-blue-400 flex items-center gap-1.5">
+          <span>🖥️ O que mostrar na tela (Monitor 1)</span>
+        </div>
+        <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+          <li>No terminal do VS Code, execute:
+            <div class="mt-2 bg-slate-900 p-2 rounded text-emerald-300 font-mono text-xs">
+              python examples/demo_puzzle.py --all
+            </div>
+          </li>
+          <li>Role a tela mostrando os tabuleiros 3x3, 4x3 e 4x4 sendo resolvidos passo a passo.</li>
+        </ul>
+      </div>
+
+      <!-- Fala Sugerida -->
+      <div class="cue-speech bg-slate-950 p-5 rounded-xl space-y-2">
+        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+          <span>🎙️ O que você fala</span>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "E para finalizar, criei também um script visual em <code>examples/demo_puzzle.py</code>. Vou rodar com a flag <code>--all</code>:"
+          <br><em>(Rode o comando e mostre os prints)</em><br>
+          "Ele mostra os três tamanhos — 3×3, 4×3 e 4×4 — sendo resolvidos passo a passo pelo A*, exibindo as peças deslizando, a métrica de Manhattan decrescendo até zero e o número de nós expandidos."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "Tudo já está commitado na branch <code>feat/sliding-puzzle</code> e com o Pull Request #1 aberto no repositório do grupo. É isso, muito obrigado pela atenção!"
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script do Cronômetro -->
+  <script>
+    let seconds = 0;
+    let timerInterval = null;
+
+    function updateDisplay() {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      document.getElementById('displayTimer').innerText = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      
+      // Muda a cor quando se aproxima de 8 minutos
+      const display = document.getElementById('displayTimer');
+      if (mins >= 8) {
+        display.className = "font-mono text-2xl font-bold text-red-400";
+      } else if (mins >= 6) {
+        display.className = "font-mono text-2xl font-bold text-amber-400";
+      } else {
+        display.className = "font-mono text-2xl font-bold text-emerald-400";
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        seconds++;
+        updateDisplay();
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      seconds = 0;
+      updateDisplay();
+    }
+  </script>
+</body>
+</html>
