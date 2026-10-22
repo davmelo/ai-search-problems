@@ -125,8 +125,9 @@
         </div>
         <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
           <li>Abra <span class="highlight-file">problems/sliding_puzzle.py</span>.</li>
-          <li>Destaque a classe <span class="text-yellow-300 font-mono">SlidingState</span> nas <span class="highlight-line">Linhas 10 a 26</span>.</li>
-          <li>Depois role até a classe <span class="text-yellow-300 font-mono">SlidingAction</span> e seu método <span class="text-yellow-300 font-mono">apply</span> nas <span class="highlight-line">Linhas 37 a 75</span>.</li>
+          <li>Mostre a classe <span class="text-yellow-300 font-mono">SlidingState</span> nas <span class="highlight-line">Linhas 10 a 26</span>.</li>
+          <li>Aponte para o dicionário <span class="text-yellow-300 font-mono">_DELTA</span> nas <span class="highlight-line">Linhas 29 a 34</span>.</li>
+          <li>Role até a classe <span class="text-yellow-300 font-mono">SlidingAction</span> e o método <span class="text-yellow-300 font-mono">apply</span> nas <span class="highlight-line">Linhas 38 a 75</span>.</li>
         </ul>
       </div>
 
@@ -136,10 +137,13 @@
           <span>🎙️ O que você fala</span>
         </div>
         <p class="text-sm leading-relaxed text-slate-200">
-          "Começando pela estrutura básica aqui nas <strong>linhas 10 a 26</strong>: nós temos a classe <code>SlidingState</code>, que herda da classe <code>State</code> da biblioteca básica. Reparem que ela é decorada com <code>@dataclass(frozen=True)</code> e guarda o tabuleiro como uma <strong>tupla imutável linear</strong>. O valor <strong>0</strong> representa o espaço vazio. Isso foi fundamental porque, para funcionar com algoritmos de busca em grafo como o <code>GraphSearch</code> e o <code>AStar</code>, o estado precisa ser estritamente <strong>hashável</strong>."
+          "Começando pela estrutura básica aqui nas <strong>linhas 10 a 26</strong>: nós temos a classe <code>SlidingState</code>, que herda da classe <code>State</code> da biblioteca básica. Reparem que ela é um <code>@dataclass(frozen=True)</code> e guarda o tabuleiro como uma <strong>tupla imutável</strong>, onde o número <strong>0</strong> representa o espaço vazio. Isso é fundamental porque, para funcionar com algoritmos de busca em grafo como o <code>GraphSearch</code> e o <code>AStar</code>, o estado precisa ser estritamente <strong>hashável</strong> e imutável."
         </p>
         <p class="text-sm leading-relaxed text-slate-200">
-          "Em seguida, nas <strong>linhas 37 a 75</strong>, temos o <code>SlidingAction</code>. Definimos as quatro direções: <em>UP, DOWN, LEFT</em> e <em>RIGHT</em>. No método <code>apply</code>, a gente calcula a posição do espaço vazio com <code>divmod</code> e verifica se a movimentação é válida dentro dos limites da grade. Se for inválida, ele retorna <code>None</code>. Se for válida, nós geramos um novo tabuleiro com a troca e retornamos <code>(novo_estado, custo 1.0)</code>. Uma regra crítica da lib que respeitamos à risca é que o <code>apply</code> <strong>nunca altera o estado original</strong>."
+          "Logo abaixo, nas <strong>linhas 29 a 34</strong>, temos o dicionário constante <code>_DELTA</code>, que mapeia as quatro direções possíveis — <em>UP, DOWN, LEFT</em> e <em>RIGHT</em> — para os deslocamentos de linha e coluna."
+        </p>
+        <p class="text-sm leading-relaxed text-slate-200">
+          "E a partir da <strong>linha 38</strong>, temos a classe <code>SlidingAction</code> com o método principal <code>apply</code>. O que o <code>apply</code> faz? Ele descobre onde o espaço vazio está usando <code>divmod</code>, soma o deslocamento do <code>_DELTA</code> e confere se a peça vizinha não vai vazar para fora das bordas da grade. Se for inválido, retorna <code>None</code>. Se for válido, ele cria um novo tabuleiro trocando o espaço vazio com a peça e retorna <code>(novo_estado, custo 1.0)</code> — respeitando a regra estrita da biblioteca de <strong>nunca alterar o estado original</strong>."
         </p>
       </div>
     </section>
