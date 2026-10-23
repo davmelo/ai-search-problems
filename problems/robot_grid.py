@@ -64,6 +64,16 @@ class RobotAction(Action):
     def __repr__(self) -> str:
         return f"ROBOT({self.name})"
 
+    def __eq__(self, other: object) -> bool:
+        return (
+            isinstance(other, RobotAction)
+            and (self.name, self.width, self.height, self.obstacles)
+            == (other.name, other.width, other.height, other.obstacles)
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.width, self.height, self.obstacles))
+
 
 class RobotGrid(Problem):
     """Robô em grid com tamanho, obstáculos e ações configuráveis.

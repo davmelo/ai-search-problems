@@ -17,6 +17,10 @@ def test_solucao_otima_e_caminho(strategy_type: type[SearchStrategy]) -> None:
     problem = RobotGrid(3, 2, initial_state=RobotState(0, 0, Direction.EAST))
     node = resolver(strategy_type(problem), problem.initial_state)
     assert node.cost == node.depth == 4  # dois avanços, giro, avanço
+    assert node.get_path() == [
+        RobotAction(name, 3, 2)
+        for name in ("forward", "forward", "right", "forward")
+    ]
     state: State = problem.initial_state
     for action in node.get_path():
         result = action.apply(state)
@@ -112,3 +116,27 @@ def test_parametros_invalidos() -> None:
         RobotGrid(2, 2, obstacles=[(0, 0)])
     with pytest.raises(ValueError):
         RobotGrid(allowed_actions=("jump",))
+
+
+def test_acoes_comparaveis_e_hashaveis() -> None:
+    action = RobotAction("left", 3, 3, [(1, 0), (2, 0)])
+    equivalent = RobotAction("left", 3, 3, [(2, 0), (1, 0), (1, 0)])
+    assert action == equivalent
+    assert hash(action) == hash(equivalent)
+    assert len({action, equivalent}) == 1
+    assert {action: "giro"}[equivalent] == "giro"
+    assert action != RobotAction("right", 3, 3, [(1, 0), (2, 0)])
+    assert action != RobotAction("left", 4, 3, [(1, 0), (2, 0)])
+    assert action != RobotAction("left", 3, 4, [(1, 0), (2, 0)])
+    assert action != RobotAction("left", 3, 3)
+    assert action != State()
+
+
+def test_comparacao_de_acoes_disponiveis() -> None:
+    problem = RobotGrid(3, 2, initial_state=RobotState(0, 0, Direction.EAST))
+    actions = problem.actions(problem.initial_state)
+    assert RobotAction("forward", 3, 2) in actions
+    assert RobotAction("left", 3, 2) in actions
+    assert RobotAction("forward", 4, 2) not in actions
+    blocked = RobotGrid(3, 2, initial_state=problem.initial_state, obstacles=[(1, 0)])
+    assert RobotAction("forward", 3, 2, [(1, 0)]) not in blocked.actions(blocked.initial_state)
