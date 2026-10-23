@@ -1,7 +1,7 @@
 import pytest
 
-from search_lib import BFS
-from strategies import UCS, AStar
+from search_lib import BFS, DFS
+from strategies import UCS, AStar, GraphSearch
 from search_lib.core import SearchNode, SearchStrategy, State
 from problems.n_queens import NQueens, PlaceQueen, QueensState
 
@@ -37,7 +37,7 @@ def solucoes(problem: NQueens, state: QueensState):
 SOLUCAO_4 = QueensState((1, 3, 0, 2), 4)  # uma das 2 soluções de n=4
 
 
-# --- Construtor ------------------------------------------------------------
+# --- Construtor e QueensState ----------------------------------------------
 
 @pytest.mark.parametrize("n", [0, -1])
 def test_construtor_rejeita_n_invalido(n):
@@ -45,7 +45,7 @@ def test_construtor_rejeita_n_invalido(n):
         NQueens(n)
 
 
-@pytest.mark.parametrize("n", ["8", 4.5, None])
+@pytest.mark.parametrize("n", ["8", 4.5, None, True, False])
 def test_construtor_rejeita_tipo_invalido(n):
     with pytest.raises(TypeError):
         NQueens(n)  # type: ignore[arg-type]
@@ -56,12 +56,30 @@ def test_estado_inicial_e_tabuleiro_vazio():
     assert problem.initial_state == QueensState((), 6)
 
 
+def test_estado_converte_lista_para_tupla():
+    st = QueensState([0, 2], 4)  # type: ignore[arg-type]
+    assert isinstance(st.queens, tuple)
+    assert st.queens == (0, 2)
+
+
+@pytest.mark.parametrize("n", [0, -2, "4", None])
+def test_estado_rejeita_dimensao_invalida(n):
+    with pytest.raises(ValueError):
+        QueensState((0,), n)  # type: ignore[arg-type]
+
+
 def test_estado_e_hashavel():
     estados = {QueensState((0, 2), 4), QueensState((0, 2), 4)}
     assert len(estados) == 1
 
 
-# --- PlaceQueen.apply ------------------------------------------------------
+# --- PlaceQueen ------------------------------------------------------------
+
+@pytest.mark.parametrize("col", ["0", 1.5, None, True])
+def test_place_queen_rejeita_tipo_invalido(col):
+    with pytest.raises(TypeError):
+        PlaceQueen(col)  # type: ignore[arg-type]
+
 
 def test_apply_valido_devolve_novo_estado_e_custo():
     state = QueensState((0,), 4)
@@ -101,6 +119,8 @@ def test_acoes_com_mesma_coluna_sao_iguais():
     assert PlaceQueen(2) == PlaceQueen(2)
     assert hash(PlaceQueen(2)) == hash(PlaceQueen(2))
     assert PlaceQueen(2) != PlaceQueen(3)
+    assert PlaceQueen(2) != State()
+    assert repr(PlaceQueen(2)) == "RAINHA(2)"
 
 
 # --- actions ---------------------------------------------------------------
@@ -157,14 +177,18 @@ def test_heuristica_vale_zero_no_objetivo():
 @pytest.mark.parametrize("n", [1, 4, 6, 8])
 def test_heuristica_no_estado_inicial_vale_n(n):
     problem = NQueens(n)
-    assert problem.heuristic(problem.initial_state) == n
+    assert problem.heuristic(problem.initial_state) == float(n)
 
 
 def test_heuristica_estado_de_outro_tipo_vale_zero():
     assert NQueens(4).heuristic(object()) == 0.0
 
 
-@pytest.mark.parametrize("n", [4, 5, 6])
+def test_heuristica_dimensao_incompativel_vale_zero():
+    assert NQueens(8).heuristic(QueensState((0,), 4)) == 0.0
+
+
+@pytest.mark.parametrize("n", [4, 5, 6, 8])
 def test_heuristica_admissivel(n):
     """h(inicial) nunca passa do custo real da solução ótima."""
     problem = NQueens(n)
@@ -181,6 +205,22 @@ def test_heuristica_consistente():
             assert problem.heuristic(state) <= custo + problem.heuristic(novo_estado)
 
 
+# --- Renderização ----------------------------------------------------------
+
+def test_render_tabuleiro():
+    board_str = NQueens.render(SOLUCAO_4)
+    linhas = board_str.strip().split("\n")
+    assert len(linhas) == 4
+    assert linhas[0] == ". Q . ."
+    assert linhas[1] == ". . . Q"
+    assert linhas[2] == "Q . . ."
+    assert linhas[3] == ". . Q ."
+
+
+def test_render_estado_invalido_retorna_vazio():
+    assert NQueens.render(object()) == ""
+
+
 # --- Correção: contagem de soluções ----------------------------------------
 
 @pytest.mark.parametrize("n,esperado", [(1, 1), (2, 0), (3, 0), (4, 2), (5, 10), (6, 4), (8, 92)])
@@ -193,7 +233,7 @@ def test_numero_de_solucoes(n, esperado):
 
 # --- Busca -----------------------------------------------------------------
 
-@pytest.mark.parametrize("strategy", [BFS, UCS, AStar])
+@pytest.mark.parametrize("strategy", [BFS, DFS, UCS, AStar, GraphSearch])
 @pytest.mark.parametrize("n", [1, 4, 6, 8])
 def test_busca_encontra_solucao_valida(strategy, n):
     problem = NQueens(n)

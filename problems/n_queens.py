@@ -3,16 +3,26 @@ from typing import List, Optional, Tuple
 
 from search_lib.core import Action, Problem, State
 
+
 @dataclass(frozen=True)
 class QueensState(State):
     """queens[r] é a coluna da rainha na linha r; as linhas são preenchidas em ordem."""
     queens: Tuple[int, ...]
     n: int
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.queens, tuple):
+            object.__setattr__(self, "queens", tuple(self.queens))
+        if not isinstance(self.n, int) or isinstance(self.n, bool) or self.n < 1:
+            raise ValueError("O tamanho do tabuleiro n deve ser um inteiro >= 1.")
+
+
 class PlaceQueen(Action):
     """Coloca uma rainha na coluna `col` da próxima linha livre."""
 
     def __init__(self, col: int):
+        if not isinstance(col, int) or isinstance(col, bool):
+            raise TypeError("A coluna deve ser um número inteiro.")
         self.col = col
 
     def apply(self, state: State) -> Optional[Tuple[State, float]]:
@@ -35,12 +45,13 @@ class PlaceQueen(Action):
     def __repr__(self) -> str:
         return f"RAINHA({self.col})"
 
+
 class NQueens(Problem):
     """N rainhas em um tabuleiro n x n, sem que nenhuma ataque outra."""
 
     def __init__(self, n: int = 8):
-        if not isinstance(n, int):
-            raise TypeError("O parâmetro n deve ser um inteiro.")
+        if not isinstance(n, int) or isinstance(n, bool):
+            raise TypeError("O parâmetro n deve ser um número inteiro.")
         if n < 1:
             raise ValueError("Precisa de n >= 1.")
         self.n = n
@@ -61,6 +72,21 @@ class NQueens(Problem):
 
     def heuristic(self, state: State) -> float:
         """Admissível: cada ação coloca exatamente uma rainha, então faltam n - colocadas."""
-        if not isinstance(state, QueensState):
+        if not isinstance(state, QueensState) or state.n != self.n:
             return 0.0
-        return float(self.n - len(state.queens))
+        return float(max(0, self.n - len(state.queens)))
+
+    @staticmethod
+    def render(state: State) -> str:
+        """Retorna uma representação visual em string do tabuleiro."""
+        if not isinstance(state, QueensState):
+            return ""
+        lines = []
+        for r in range(state.n):
+            if r < len(state.queens):
+                c = state.queens[r]
+                row_str = " ".join("Q" if col == c else "." for col in range(state.n))
+            else:
+                row_str = " ".join("." for _ in range(state.n))
+            lines.append(row_str)
+        return "\n".join(lines)
