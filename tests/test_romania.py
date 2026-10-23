@@ -2,7 +2,7 @@ import pytest
 
 from search_lib import BFS
 from strategies import UCS, AStar
-from tests.test_strategies import resolver
+from search_lib.core import SearchNode, SearchStrategy, State
 from problems.romania import (
     ROMANIA_GRAPH,
     SLD_TO_BUCHAREST,
@@ -10,6 +10,14 @@ from problems.romania import (
     Romania,
     RomaniaState,
 )
+
+# --- Helper ---------------------------------------------------------------
+
+def resolver(strategy: SearchStrategy, inicial: State) -> SearchNode:
+    """Roda a busca e garante (com assert) que houve solução."""
+    node = strategy.search(inicial).solution_node
+    assert node is not None, "a busca deveria ter encontrado solução"
+    return node
 
 
 # --- Solução ótima ---------------------------------------------------------
@@ -75,6 +83,14 @@ def test_acao_em_estado_de_outro_tipo_retorna_none():
     assert MoveToCity("Sibiu").apply(object()) is None
 
 
+def test_acao_em_cidade_inexistente_retorna_none():
+    assert MoveToCity("Sibiu").apply(RomaniaState("Atlantis")) is None
+
+
+def test_acoes_em_cidade_inexistente_retorna_vazio():
+    assert Romania().actions(RomaniaState("Atlantis")) == []
+
+
 def test_apply_nao_altera_estado_original():
     state = Romania().initial_state
     copy = RomaniaState(state.city)
@@ -114,6 +130,10 @@ def test_heuristica_zero_para_outros_destinos():
     assert problem.heuristic(RomaniaState("Arad")) == 0
 
 
+def test_heuristica_cidade_invalida_retorna_zero():
+    assert Romania().heuristic(RomaniaState("Atlantis")) == 0.0
+
+
 @pytest.mark.parametrize("city", sorted(ROMANIA_GRAPH))
 def test_heuristica_admissivel(city):
     """h(n) nunca passa do custo ótimo real de n até Bucharest."""
@@ -144,4 +164,3 @@ def test_grafo_tem_20_cidades_e_46_arestas_direcionadas():
 
 def test_tabela_sld_cobre_as_mesmas_cidades():
     assert set(SLD_TO_BUCHAREST) == set(ROMANIA_GRAPH)
-    

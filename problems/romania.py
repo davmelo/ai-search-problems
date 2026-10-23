@@ -56,10 +56,11 @@ class MoveToCity(Action):
     def apply(self, state: State) -> Optional[Tuple[State, float]]:
         if not isinstance(state, RomaniaState):
             return None
-        cost = ROMANIA_GRAPH[state.city].get(self.dst)
+        cost = ROMANIA_GRAPH.get(state.city, {}).get(self.dst)
         if cost is None:
             return None  # não há estrada direta
         return RomaniaState(self.dst), float(cost)
+
     def __eq__(self, other: object) -> bool:
         return isinstance(other, MoveToCity) and self.dst == other.dst
 
@@ -84,9 +85,9 @@ class Romania(Problem):
     def actions(self, state: State) -> List[Action]:
         if not isinstance(state, RomaniaState):
             return []
-        return [MoveToCity(d) for d in ROMANIA_GRAPH[state.city]]
+        return [MoveToCity(d) for d in ROMANIA_GRAPH.get(state.city, {})]
 
     def heuristic(self, state: State) -> float:
         if not isinstance(state, RomaniaState) or self.goal.city != "Bucharest":
             return 0.0
-        return float(SLD_TO_BUCHAREST[state.city])
+        return float(SLD_TO_BUCHAREST.get(state.city, 0.0))

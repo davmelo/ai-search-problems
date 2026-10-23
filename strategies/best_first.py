@@ -23,6 +23,9 @@ class AStar(SearchStrategy):
     alcançado de novo por um caminho mais barato, ele é reinserido na fronteira,
     então o resultado continua correto mesmo com h inconsistente.
 
+    Em empates de f, prefere o nó com menor h (mais perto do objetivo), o que
+    costuma reduzir a quantidade de nós expandidos.
+
     Observação: `max_frontier_size` conta as entradas do heap, que podem incluir
     entradas obsoletas (estados já reinseridos com custo menor).
     """
@@ -38,12 +41,13 @@ class AStar(SearchStrategy):
 
         root = SearchNode(initial_state)
         metrics.nodes_generated += 1
-        frontier = [(self.heuristic(initial_state), next(counter), root)]
+        h0 = self.heuristic(initial_state)
+        frontier = [(h0, h0, next(counter), root)]
         best_cost = {initial_state: 0.0}
         metrics.max_frontier_size = 1
 
         while frontier:
-            _, _, node = heapq.heappop(frontier)
+            _, _, _, node = heapq.heappop(frontier)
 
             # entrada obsoleta: já existe caminho melhor até este estado
             if node.cost > best_cost.get(node.state, float("inf")):
@@ -66,8 +70,9 @@ class AStar(SearchStrategy):
 
                 best_cost[next_state] = new_cost
                 child = SearchNode(next_state, node, action, new_cost)
-                f = new_cost + self.heuristic(next_state)
-                heapq.heappush(frontier, (f, next(counter), child))
+                h = self.heuristic(next_state)
+                # desempate: menor f, depois menor h (mais perto do objetivo)
+                heapq.heappush(frontier, (new_cost + h, h, next(counter), child))
                 metrics.nodes_generated += 1
                 metrics.max_frontier_size = max(
                     metrics.max_frontier_size, len(frontier)

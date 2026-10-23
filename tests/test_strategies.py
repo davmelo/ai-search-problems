@@ -7,7 +7,7 @@ from search_lib import BFS
 from search_lib.core import Action, Problem, SearchNode, SearchStrategy, State
 from problems.hanoi import Hanoi
 from strategies import UCS, AStar, GraphSearch
-
+from tests.test_helpers import resolver
 
 # --- problema de teste: grafo ponderado pequeno ------------------------------
 #
@@ -65,13 +65,6 @@ class WeightedGraph(Problem):
 
 # Heurística admissível para o grafo acima (nunca superestima o custo real até G)
 H_ADMISSIVEL: Dict[str, float] = {"A": 3, "B": 2, "C": 1, "D": 1, "G": 0}
-
-
-def resolver(strategy: SearchStrategy, inicial: State) -> SearchNode:
-    """Roda a busca e garante (com assert) que houve solução."""
-    node = strategy.search(inicial).solution_node
-    assert node is not None, "a busca deveria ter encontrado solução"
-    return node
 
 
 def nomes(node: SearchNode) -> List[str]:
