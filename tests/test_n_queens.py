@@ -2,11 +2,18 @@ import pytest
 
 from search_lib import BFS
 from strategies import UCS, AStar
-from tests.test_strategies import resolver
+from search_lib.core import SearchNode, SearchStrategy, State
 from problems.n_queens import NQueens, PlaceQueen, QueensState
 
 
 # --- Helpers ---------------------------------------------------------------
+
+def resolver(strategy: SearchStrategy, inicial: State) -> SearchNode:
+    """Roda a busca e garante (com assert) que houve solução."""
+    node = strategy.search(inicial).solution_node
+    assert node is not None, "a busca deveria ter encontrado solução"
+    return node
+
 
 def sem_ataques(queens: tuple[int, ...]) -> bool:
     """True se nenhuma rainha ataca outra (coluna ou diagonal)."""
@@ -36,6 +43,12 @@ SOLUCAO_4 = QueensState((1, 3, 0, 2), 4)  # uma das 2 soluções de n=4
 def test_construtor_rejeita_n_invalido(n):
     with pytest.raises(ValueError):
         NQueens(n)
+
+
+@pytest.mark.parametrize("n", ["8", 4.5, None])
+def test_construtor_rejeita_tipo_invalido(n):
+    with pytest.raises(TypeError):
+        NQueens(n)  # type: ignore[arg-type]
 
 
 def test_estado_inicial_e_tabuleiro_vazio():
@@ -107,6 +120,11 @@ def test_beco_sem_saida_nao_tem_acoes():
     assert problem.actions(QueensState((0, 2), 4)) == []
 
 
+def test_tabuleiro_cheio_retorna_acoes_vazias():
+    problem = NQueens(4)
+    assert problem.actions(SOLUCAO_4) == []
+
+
 def test_actions_estado_de_outro_tipo_retorna_vazio():
     assert NQueens(4).actions(object()) == []
 
@@ -118,6 +136,12 @@ def test_is_goal():
     assert problem.is_goal(SOLUCAO_4)
     assert not problem.is_goal(QueensState((1, 3, 0), 4))
     assert not problem.is_goal(problem.initial_state)
+
+
+def test_is_goal_tamanho_incompativel():
+    problem = NQueens(8)
+    assert not problem.is_goal(SOLUCAO_4)
+    assert not problem.is_goal(QueensState((0, 1, 2, 3, 4, 5, 6, 7), 4))
 
 
 def test_is_goal_estado_de_outro_tipo():

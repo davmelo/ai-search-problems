@@ -39,6 +39,8 @@ class NQueens(Problem):
     """N rainhas em um tabuleiro n x n, sem que nenhuma ataque outra."""
 
     def __init__(self, n: int = 8):
+        if not isinstance(n, int):
+            raise TypeError("O parâmetro n deve ser um inteiro.")
         if n < 1:
             raise ValueError("Precisa de n >= 1.")
         self.n = n
@@ -46,12 +48,16 @@ class NQueens(Problem):
         self._moves = [PlaceQueen(c) for c in range(n)]
 
     def actions(self, state: State) -> List[Action]:
-        if not isinstance(state, QueensState):
+        if not isinstance(state, QueensState) or len(state.queens) >= self.n:
             return []
         return [m for m in self._moves if m.apply(state) is not None]
 
     def is_goal(self, state: State) -> bool:
-        return isinstance(state, QueensState) and len(state.queens) == self.n
+        return (
+            isinstance(state, QueensState)
+            and state.n == self.n
+            and len(state.queens) == self.n
+        )
 
     def heuristic(self, state: State) -> float:
         """Admissível: cada ação coloca exatamente uma rainha, então faltam n - colocadas."""
