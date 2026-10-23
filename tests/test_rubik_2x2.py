@@ -27,6 +27,7 @@ def test_solucao_otima_e_caminho(strategy_type: type[SearchStrategy]) -> None:
     problem = Rubik2x2(initial_state=initial)
     node = resolver(strategy_type(problem), initial)
     assert node.cost == node.depth == 2
+    assert node.get_path() == [RotateFace("U'"), RotateFace("R'")]
     state: State = initial
     for action in node.get_path():
         result = action.apply(state)
@@ -125,3 +126,25 @@ def test_parametros_invalidos() -> None:
         RubikState((0,) * 24)
     with pytest.raises(ValueError):
         Rubik2x2(allowed_moves=("R3",))
+
+
+def test_acoes_comparaveis_e_hashaveis() -> None:
+    for move in ("R", "R'", "R2"):
+        action = RotateFace(move)
+        equivalent = RotateFace(move)
+        assert action == equivalent
+        assert hash(action) == hash(equivalent)
+        assert len({action, equivalent}) == 1
+        assert {action: "giro"}[equivalent] == "giro"
+        assert action != State()
+    assert RotateFace("R") != RotateFace("R'")
+    assert RotateFace("R") != RotateFace("U")
+    assert RotateFace("R") != RotateFace("R2")
+
+
+def test_comparacao_de_acoes_disponiveis() -> None:
+    problem = Rubik2x2()
+    assert RotateFace("R") in problem.actions(problem.initial_state)
+    assert RotateFace("R2") not in problem.actions(problem.initial_state)
+    restricted = Rubik2x2(allowed_moves=("U", "U'"))
+    assert RotateFace("R") not in restricted.actions(restricted.initial_state)

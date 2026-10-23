@@ -56,6 +56,12 @@ class RotateFace(Action):
     def __repr__(self) -> str:
         return f"ROTATE({self.move})"
 
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, RotateFace) and self.move == other.move
+
+    def __hash__(self) -> int:
+        return hash(self.move)
+
 
 class Rubik2x2(Problem):
     """Cubo 2x2 com movimentos configuráveis e orientação global fixa.
